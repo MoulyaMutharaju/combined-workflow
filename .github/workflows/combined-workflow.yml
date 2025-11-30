@@ -7,7 +7,6 @@ on:
 
 jobs:
 
-  
   # WORKFLOW 1 — Triggered on push to main
 
   jobA_push:
