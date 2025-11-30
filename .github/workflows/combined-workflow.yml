@@ -1,0 +1,84 @@
+name: Combined Workflow With Conditional Triggers
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  #############################################
+  # WORKFLOW 1 — Triggered on push to main
+  #############################################
+
+  jobA_push:
+    name: Run Python File (Push Workflow)
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Run app.py
+        run: python app.py
+
+  jobB_push:
+    name: Run Linux Commands (Push Workflow)
+    runs-on: ubuntu-latest
+    needs: jobA_push
+    if: github.event_name == 'push'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Linux Commands
+        run: |
+          echo "Job B running (push workflow)"
+          mkdir test_folder
+          cd test_folder
+          pwd
+          ls -la
+
+
+  #############################################
+  # WORKFLOW 2 — Triggered manually (prod)
+  #############################################
+
+  jobA_manual:
+    name: Run Python File (Manual Workflow)
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Python file
+        run: python3 app.py
+
+
+  jobB_manual:
+    name: Run Linux Commands (Manual Workflow)
+    runs-on: ubuntu-latest
+    environment:
+      name: prod
+    needs: jobA_manual
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Basic commands
+        run: |
+          echo "Running Job B (manual workflow)"
+          mkdir test_folder
+          cd test_folder
+          pwd
+          ls -la
