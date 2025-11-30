@@ -17,8 +17,8 @@ on:
 
 jobs:
 
-  #####
-  # WORKFLOW 1 — Push Workflow (Triggered automatically OR by dropdown)
+  #############################################
+  # WORKFLOW 1 — Push Workflow
   #############################################
 
   jobA_push:
@@ -27,7 +27,8 @@ jobs:
     if: >
       github.event_name == 'push' ||
       (github.event_name == 'workflow_dispatch' &&
-       github.event.inputs.workflow_choice in ['push_workflow', 'both'])
+       (github.event.inputs.workflow_choice == 'push_workflow' ||
+        github.event.inputs.workflow_choice == 'both'))
 
     steps:
       - name: Checkout repository
@@ -49,7 +50,8 @@ jobs:
     if: >
       github.event_name == 'push' ||
       (github.event_name == 'workflow_dispatch' &&
-       github.event.inputs.workflow_choice in ['push_workflow', 'both'])
+       (github.event.inputs.workflow_choice == 'push_workflow' ||
+        github.event.inputs.workflow_choice == 'both'))
 
     steps:
       - name: Checkout repository
@@ -66,7 +68,7 @@ jobs:
 
 
   #############################################
-  # WORKFLOW 2 — Manual Workflow (Triggered only by dropdown)
+  # WORKFLOW 2 — Manual Workflow (Triggered ONLY by dropdown)
   #############################################
 
   jobA_manual:
@@ -76,7 +78,8 @@ jobs:
       name: prod
     if: >
       github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.workflow_choice in ['manual_workflow', 'both']
+      (github.event.inputs.workflow_choice == 'manual_workflow' ||
+       github.event.inputs.workflow_choice == 'both')
 
     steps:
       - name: Checkout code
@@ -94,7 +97,8 @@ jobs:
     needs: jobA_manual
     if: >
       github.event_name == 'workflow_dispatch' &&
-      github.event.inputs.workflow_choice in ['manual_workflow', 'both']
+      (github.event.inputs.workflow_choice == 'manual_workflow' ||
+       github.event.inputs.workflow_choice == 'both')
 
     steps:
       - name: Basic commands
@@ -104,4 +108,3 @@ jobs:
           cd test_folder
           pwd
           ls -la
-          
