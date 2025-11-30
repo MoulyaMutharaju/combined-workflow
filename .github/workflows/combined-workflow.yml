@@ -7,9 +7,8 @@ on:
 
 jobs:
 
-  #############################################
+  
   # WORKFLOW 1 — Triggered on push to main
-  #############################################
 
   jobA_push:
     name: Run Python File (Push Workflow)
@@ -47,9 +46,9 @@ jobs:
           ls -la
 
 
-  #############################################
+ 
   # WORKFLOW 2 — Triggered manually (prod)
-  #############################################
+
 
   jobA_manual:
     name: Run Python File (Manual Workflow)
